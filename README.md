@@ -1,2 +1,92 @@
 # VBA-challenge
-VBA-challenge 
+VBA-challenge
+
+' back up of VBA code 
+Sub stockfilter()
+Dim ws As Worksheet
+For Each ws In Worksheets
+
+
+Dim ticker As String
+Dim Summary_Table_Row As Integer
+Dim openprice As Double
+Dim closing As Double
+Dim year As Double
+Dim percent As Double
+Dim valume As Double
+Dim counter As Double
+Dim counter1 As Double
+Dim counter2 As Double
+ws.Cells(2, 15).Value = "Greatest % Increase"
+ws.Cells(3, 15).Value = "Greatest % Decrease"
+ws.Cells(4, 15).Value = "Greatest Total Valume"
+ws.Cells(1, 9).Value = "Ticker"
+ws.Cells(1, 10).Value = "Yearly Change"
+ws.Cells(1, 11).Value = "Percent Change"
+ws.Cells(1, 12).Value = "Total Stock Valume"
+ws.Cells(1, 16).Value = "Ticker"
+ws.Cells(1, 17).Value = "Value"
+counter = 0
+counter1 = 0
+counter2 = 0
+openprice = Cells(2, 3).Value
+Summary_Table_Row = 2
+valume = 0
+lastrow = ws.Range("A1").End(xlDown).Row
+
+ws.Range("k:k").NumberFormat = "0.00%"
+ws.Range("q2:q3").NumberFormat = "0.00%"
+
+
+
+For I = 2 To lastrow
+
+   If ws.Cells(I + 1, 1).Value = ws.Cells(I, 1).Value Then
+    valume = valume + ws.Cells(I, 7).Value
+    End If
+    
+    
+    If ws.Cells(I + 1, 1).Value <> ws.Cells(I, 1).Value Then
+        ticker = ws.Cells(I, 1).Value
+        closing = ws.Cells(I, 6).Value
+        year = closing - openprice
+        valume = valume + ws.Cells(I, 7).Value
+        percent = year / openprice
+        ws.Range("i" & Summary_Table_Row).Value = ticker
+        ws.Range("j" & Summary_Table_Row).Value = year
+        ws.Range("k" & Summary_Table_Row).Value = percent
+        ws.Range("l" & Summary_Table_Row).Value = valume
+        openprice = ws.Cells(I + 1, 3).Value
+         Summary_Table_Row = Summary_Table_Row + 1
+         valume = 0
+    End If
+
+Next I
+
+
+lastrow2 = ws.Range("I1").End(xlDown).Row
+    For I = 2 To lastrow2
+ If ws.Cells(I, 11).Value > counter Then
+        counter = ws.Cells(I, 11).Value
+        ws.Cells(2, 16).Value = ws.Cells(I, 9).Value
+       End If
+    If ws.Cells(I, 11).Value < counter1 Then
+            counter1 = ws.Cells(I, 11).Value
+            ws.Cells(3, 16).Value = ws.Cells(I, 9).Value
+            End If
+   If ws.Cells(I, 12).Value > counter2 Then
+          counter2 = ws.Cells(I, 12).Value
+          ws.Cells(4, 16).Value = ws.Cells(I, 9).Value
+          End If
+   If ws.Cells(I, 10).Value > 0 Then
+     ws.Cells(I, 10).Interior.ColorIndex = 4
+    End If
+     If ws.Cells(I, 10).Value < 0 Then
+      ws.Cells(I, 10).Interior.ColorIndex = 3
+      End If
+Next I
+ws.Cells(2, 17).Value = counter
+ws.Cells(3, 17).Value = counter1
+ws.Cells(4, 17).Value = counter2
+Next ws
+End Sub
